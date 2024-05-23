@@ -33,7 +33,12 @@
         },
         {
             "type": "memory",
-            "key": "└ └󰑭",
+            "key": "│ ├󰍛",
+            "keyColor": "green"
+        },
+        {
+            "type": "disk",
+            "key": "└ └",
             "keyColor": "green"
         },
         {
@@ -77,6 +82,11 @@
             "keyColor": "blue"
         },
         {
+            "type": "lm",
+            "key": "│ ├",
+            "keyColor": "blue"
+        },
+        {
             "type": "wm",
             "key": "│ ├",
             "keyColor": "blue"
@@ -98,7 +108,7 @@
         "break",
         {
             "type": "custom",
-            "format": "\u001b[90m┌────────────────────Uptime / Age────────────────────┐"
+            "format": "\u001b[90m┌────────────────────Uptime / Age / DT────────────────────┐"
         },
         {
             "type": "command",
@@ -112,8 +122,13 @@
             "keyColor": "magenta"
         },
         {
+            "type": "datetime",
+            "key": "  DateTime ",
+            "keyColor": "magenta"
+        },
+        {
             "type": "custom",
-            "format": "\u001b[90m└────────────────────────────────────────────────────┘"
+            "format": "\u001b[90m└─────────────────────────────────────────────────────────┘"
         },
         "break",
     ]
