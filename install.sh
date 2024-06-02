@@ -44,7 +44,7 @@ echo
 echo "Installing Layan Theme"
 echo "######################"
 echo
-cd ~ && git clone https://github.com/xerolinux/Layan-kde.git && cd Layan-kde/ && sh install.sh
+cd ~ && git clone https://github.com/vinceliuice/Layan-kde.git && cd Layan-kde/ && sh install.sh
 cd ~ && rm -Rf Layan-kde/
 sleep 2
 echo
