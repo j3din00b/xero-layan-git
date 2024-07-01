@@ -208,10 +208,6 @@ latitude=33.863663
 longitude=35.597227
 stationID=IMATND12
 
-[Containments][126][Applets][226]
-immutability=1
-plugin=com.github.boraerciyas.controlcentre
-
 [Containments][126][Applets][226][Configuration]
 PreloadWeight=85
 popupHeight=360
