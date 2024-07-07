@@ -4,9 +4,9 @@
         "source": "~/.config/fastfetch/xero.png",
         "type": "kitty",
         "height": 15,
-        "width": 30,
+        "width": 26,
         "padding": {
-            "top": 5,
+            "top": 4,
             "left": 3
         }
     },
