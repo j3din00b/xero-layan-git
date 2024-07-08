@@ -58,7 +58,6 @@ echo "####################"
 cd ~ && git clone https://github.com/vinceliuice/Tela-circle-icon-theme.git && cd Tela-circle-icon-theme/
 sudo chmod +x install.sh && sh install.sh -c purple
 sleep 2
-echo "clear && neofetch" >> ~/.bashrc
 rm -rf ~/xero-layan-git/ ~/Tela-circle-icon-theme/
 echo
 if [ -f ~/.bashrc ]; then sed -i 's/neofetch/fastfetch/g' ~/.bashrc; fi
