@@ -24,7 +24,7 @@ else
     exit 1
 fi
 # Install packages using the detected AUR helper
-$aur_helper -S --noconfirm --needed aur/ttf-meslo-nerd-font-powerlevel10k
+$aur_helper -S --noconfirm --needed ttf-meslo-nerd-font-powerlevel10k oh-my-posh-bin
 sleep 2
 echo
 echo "Creating Backup & Applying new Rice, hold on..."
@@ -32,6 +32,19 @@ echo "###############################################"
 cp -Rf ~/.config ~/.config-backup-$(date +%Y.%m.%d-%H.%M.%S) && cp -Rf Configs/Home/. ~
 sudo cp -Rf Configs/System/. / && sudo cp -Rf Configs/Home/. /root/
 sleep 2
+echo
+echo "Applying OhMy-Posh to Bash"
+echo
+# Check if the folder exists, if not create it and download the file
+if [ ! -d "$HOME/.config/ohmyposh" ]; then
+  mkdir -p "$HOME/.config/ohmyposh"
+fi
+curl -o "$HOME/.config/ohmyposh/tokyonight_storm.omp.json" https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/tokyonight_storm.omp.json
+
+# Check if the line exists in ~/.bashrc, if not add it
+if ! grep -Fxq 'eval "$(oh-my-posh init bash --config $HOME/.config/ohmyposh/tokyonight_storm.omp.json)"' "$HOME/.bashrc"; then
+  echo 'eval "$(oh-my-posh init bash --config $HOME/.config/ohmyposh/tokyonight_storm.omp.json)"' >> "$HOME/.bashrc"
+fi
 echo
 echo "Applying Grub Theme...."
 echo "#######################"
