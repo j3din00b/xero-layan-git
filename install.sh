@@ -43,6 +43,7 @@ curl -o "$HOME/.config/ohmyposh/tokyonight_storm.omp.json" https://raw.githubuse
 
 # Check if the line exists in ~/.bashrc, if not add it
 if ! grep -Fxq 'eval "$(oh-my-posh init bash --config $HOME/.config/ohmyposh/tokyonight_storm.omp.json)"' "$HOME/.bashrc"; then
+  echo '' >> "$HOME/.bashrc"
   echo 'eval "$(oh-my-posh init bash --config $HOME/.config/ohmyposh/tokyonight_storm.omp.json)"' >> "$HOME/.bashrc"
 fi
 echo
