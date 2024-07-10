@@ -40,6 +40,7 @@ add_fastfetch() {
   if ! grep -Fxq 'fastfetch' "$HOME/.bashrc"; then
     echo '' >> "$HOME/.bashrc"
     echo 'fastfetch' >> "$HOME/.bashrc"
+    echo
     echo "fastfetch has been added to your .bashrc and will run on Terminal launch."
   else
     echo "fastfetch is already set to run on Terminal launch."
