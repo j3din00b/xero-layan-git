@@ -33,6 +33,15 @@ cp -Rf ~/.config ~/.config-backup-$(date +%Y.%m.%d-%H.%M.%S) && cp -Rf Configs/H
 sudo cp -Rf Configs/System/. / && sudo cp -Rf Configs/Home/. /root/
 sleep 2
 echo
+echo "Adding Fastfetch to .bashrc"
+echo
+# Check if the line exists in ~/.bashrc, if not add it
+if ! grep -Fxq 'fastfetch' "$HOME/.bashrc"; then
+  echo '' >> "$HOME/.bashrc"
+  echo 'fastfetch' >> "$HOME/.bashrc"
+fi
+sleep 2
+echo
 echo "Applying OhMy-Posh to Bash"
 echo
 # Check if the folder exists, if not create it and download the file
@@ -40,7 +49,7 @@ if [ ! -d "$HOME/.config/ohmyposh" ]; then
   mkdir -p "$HOME/.config/ohmyposh"
 fi
 curl -o "$HOME/.config/ohmyposh/tokyonight_storm.omp.json" https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/tokyonight_storm.omp.json
-
+sleep 2
 # Check if the line exists in ~/.bashrc, if not add it
 if ! grep -Fxq 'eval "$(oh-my-posh init bash --config $HOME/.config/ohmyposh/tokyonight_storm.omp.json)"' "$HOME/.bashrc"; then
   echo '' >> "$HOME/.bashrc"
