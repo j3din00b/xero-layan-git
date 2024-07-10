@@ -51,10 +51,10 @@ add_fastfetch() {
 read -p "Do you want to enable fastfetch to run on Terminal launch? (y/n): " response
 
 case "$response" in
-  [yY][eE][sS]|[yY])
+  [yY][oO][yY])
     add_fastfetch
     ;;
-  [nN][oO]|[nN])
+  [nN])
     echo "fastfetch will not be added to your .bashrc."
     ;;
   *)
