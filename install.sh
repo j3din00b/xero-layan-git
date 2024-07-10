@@ -35,11 +35,31 @@ sleep 2
 echo
 echo "Adding Fastfetch to .bashrc"
 echo
-# Check if the line exists in ~/.bashrc, if not add it
-if ! grep -Fxq 'fastfetch' "$HOME/.bashrc"; then
-  echo '' >> "$HOME/.bashrc"
-  echo 'fastfetch' >> "$HOME/.bashrc"
-fi
+# Function to add fastfetch to .bashrc
+add_fastfetch() {
+  if ! grep -Fxq 'fastfetch' "$HOME/.bashrc"; then
+    echo '' >> "$HOME/.bashrc"
+    echo 'fastfetch' >> "$HOME/.bashrc"
+    echo "fastfetch has been added to your .bashrc and will run on Terminal launch."
+  else
+    echo "fastfetch is already set to run on Terminal launch."
+  fi
+}
+
+# Prompt the user
+read -p "Do you want to enable fastfetch to run on Terminal launch? (y/n): " response
+
+case "$response" in
+  [yY][eE][sS]|[yY])
+    add_fastfetch
+    ;;
+  [nN][oO]|[nN])
+    echo "fastfetch will not be added to your .bashrc."
+    ;;
+  *)
+    echo "Invalid response. Please enter y or n."
+    ;;
+esac
 sleep 2
 echo
 echo "Applying OhMy-Posh to Bash"
