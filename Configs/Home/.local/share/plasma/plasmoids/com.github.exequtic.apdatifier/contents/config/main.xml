@@ -13,22 +13,21 @@
         <entry name="interval" type="bool"><default>true</default></entry>
         <entry name="time" type="int"><default>60</default></entry>
         <entry name="checkOnStartup" type="bool"><default>false</default></entry>
-        <entry name="archRepo" type="bool"><default>true</default></entry>
+        <entry name="arch" type="bool"><default>true</default></entry>
         <entry name="aur" type="bool"><default>false</default></entry>
         <entry name="archNews" type="bool"><default>false</default></entry>
-        <entry name="lastNews" type="string"><default></default></entry>
         <entry name="flatpak" type="bool"><default>false</default></entry>
-        <entry name="plasmoids" type="bool"><default>false</default></entry>
+        <entry name="widgets" type="bool"><default>false</default></entry>
         <entry name="wrapper" type="string"><default></default></entry>
-        <entry name="exclude" type="string"><default></default></entry>
         <entry name="middleAction" type="string"><default>upgradeSystem</default></entry>
         <entry name="rightAction" type="string"><default></default></entry>
         <entry name="scrollUpAction" type="string"><default>switchInterval</default></entry>
         <entry name="scrollDownAction" type="string"><default>management</default></entry>
-        <entry name="notifications" type="bool"><default>true</default></entry>
-        <entry name="withSound" type="bool"><default>true</default></entry>
+        <entry name="notifyUpdates" type="bool"><default>true</default></entry>
         <entry name="notifyEveryBump" type="bool"><default>true</default></entry>
-        <entry name="timestamp" type="string"><default></default></entry>
+        <entry name="notifyErrors" type="bool"><default>false</default></entry>
+        <entry name="notifySound" type="bool"><default>true</default></entry>
+        <entry name="notifyPersistent" type="bool"><default>false</default></entry>
     </group>
     <group name="Upgrade">
         <entry name="terminal" type="string"><default></default></entry>
@@ -43,21 +42,6 @@
         <entry name="dynamicUrl" type="string"><default>null</default></entry>
     </group>
     <group name="Appearance">
-        <entry name="listView" type="int"><default>0</default></entry>
-        <entry name="spacing" type="int"><default>6</default></entry>
-        <entry name="customIconsEnabled" type="bool"><default>false</default></entry>
-        <entry name="customIcons" type="string"><default></default></entry>
-        <entry name="ownIconsUI" type="bool"><default>true</default></entry>
-        <entry name="showStatusText" type="bool"><default>true</default></entry>
-        <entry name="showToolBar" type="bool"><default>true</default></entry>
-        <entry name="searchButton" type="bool"><default>true</default></entry>
-        <entry name="intervalButton" type="bool"><default>true</default></entry>
-        <entry name="sortButton" type="bool"><default>true</default></entry>
-        <entry name="managementButton" type="bool"><default>true</default></entry>
-        <entry name="upgradeButton" type="bool"><default>true</default></entry>
-        <entry name="checkButton" type="bool"><default>true</default></entry>
-        <entry name="showTabBar" type="bool"><default>true</default></entry>
-        <entry name="sorting" type="bool"><default>true</default></entry>
         <entry name="relevantIcon" type="int"><default>0</default></entry>
         <entry name="selectedIcon" type="string"><default>apdatifier-plasmoid</default></entry>
         <entry name="indicatorStop" type="bool"><default>true</default></entry>
@@ -75,5 +59,26 @@
         <entry name="counterBottom" type="bool"><default>false</default></entry>
         <entry name="counterRight" type="bool"><default>true</default></entry>
         <entry name="counterLeft" type="bool"><default>false</default></entry>
+        <entry name="ownIconsUI" type="bool"><default>true</default></entry>
+        <entry name="listView" type="int"><default>0</default></entry>
+        <entry name="spacing" type="int"><default>6</default></entry>
+        <entry name="sorting" type="bool"><default>true</default></entry>
+        <entry name="showStatusText" type="bool"><default>true</default></entry>
+        <entry name="showToolBar" type="bool"><default>true</default></entry>
+        <entry name="searchButton" type="bool"><default>true</default></entry>
+        <entry name="intervalButton" type="bool"><default>true</default></entry>
+        <entry name="sortButton" type="bool"><default>true</default></entry>
+        <entry name="managementButton" type="bool"><default>true</default></entry>
+        <entry name="upgradeButton" type="bool"><default>true</default></entry>
+        <entry name="checkButton" type="bool"><default>true</default></entry>
+        <entry name="showTabBar" type="bool"><default>true</default></entry>
+    </group>
+    <group name="Miscellaneous">
+        <entry name="version" type="string"><default>v0</default></entry>
+        <entry name="timestamp" type="string"><default></default></entry>
+        <entry name="configMsg" type="bool"><default>true</default></entry>
+        <entry name="rulesMsg" type="bool"><default>true</default></entry>
+        <entry name="newsMsg" type="bool"><default>false</default></entry>
+        <entry name="news" type="string"><default></default></entry>
     </group>
 </kcfg>

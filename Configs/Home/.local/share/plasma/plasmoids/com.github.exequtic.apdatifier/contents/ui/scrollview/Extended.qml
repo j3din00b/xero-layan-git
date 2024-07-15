@@ -15,21 +15,21 @@ import org.kde.kirigami as Kirigami
 import "../../tools/tools.js" as JS
 
 ScrollView {
-    ScrollBar.vertical.policy: (count == 0 || busy || error) ? ScrollBar.AlwaysOff : ScrollBar.AsNeeded
+    ScrollBar.vertical.policy: (sts.count === 0 || sts.busy || sts.err) ? ScrollBar.AlwaysOff : ScrollBar.AsNeeded
     contentItem: ListView {
         model: modelList
         boundsBehavior: Flickable.StopAtBounds
-        highlight: Highlight {}
-        highlightMoveDuration: 0
-        highlightResizeDuration: 0
+        highlight: Highlight { visible: sts.idle }
+        highlightMoveDuration: Kirigami.Units.shortDuration
+        highlightResizeDuration: Kirigami.Units.shortDuration
         height: parent.height
 
         delegate: ExpandableListItem {
-            visible: !busy && !error && count > 0
+            visible: sts.pending
             property var pkg: []
             title: model.NM
             subtitle: model.RE + "  " + model.VO + " → " + model.VN
-            icon: JS.setPackageIcon(pkgIcons, model.NM, model.RE, model.GR, model.ID, model.IC)
+            icon: model.IC
 
             contextualActions: [
                 Action {

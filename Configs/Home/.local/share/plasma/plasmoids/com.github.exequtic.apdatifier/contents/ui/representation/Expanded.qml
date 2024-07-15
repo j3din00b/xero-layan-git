@@ -18,11 +18,8 @@ import "../scrollview" as View
 import "../../tools/tools.js" as JS
 
 Representation {
-    id: root
+    property string currVersion: "v2.8"
     property bool searchFieldOpen: false
-    property var pkgIcons: cfg.customIcons
-    property bool newsVisibility: !busy && Object.keys(news).length !== 0 && !news.dismissed && !searchFieldOpen
-    function updateVisibility() { newsVisibility = !news.dismissed; }
 
     property string statusIcon: {
         var icons = {
@@ -30,7 +27,7 @@ Representation {
             "1": cfg.ownIconsUI ? "status_pending" : "accept_time_event",
             "2": cfg.ownIconsUI ? "status_blank" : ""
         }
-        return icons[statusIco] !== undefined ? icons[statusIco] : statusIco
+        return icons[sts.statusIco] !== undefined ? icons[sts.statusIco] : sts.statusIco
     }
 
     header: PlasmoidHeading {
@@ -57,7 +54,7 @@ Representation {
                 DescriptiveLabel {
                     Layout.maximumWidth: toolBar.width - toolBarButtons.width - Kirigami.Units.iconSizes.smallMedium
                     Layout.alignment: Qt.AlignLeft
-                    text: statusMsg
+                    text: sts.statusMsg
                     elide: Text.ElideRight
                     font.bold: true
                 }
@@ -77,7 +74,7 @@ Representation {
                         searchFieldOpen = !searchField.visible
                         searchField.focus = searchFieldOpen
                     }
-                    enabled: !busy && !error && count > 0
+                    enabled: sts.pending
                     visible: enabled && cfg.searchButton
                     tooltipText: i18n("Filter by package name")
                 }
@@ -87,37 +84,37 @@ Representation {
                                     : (cfg.interval ? "media-playback-paused" : "media-playback-playing")
                     color: !cfg.interval && !cfg.indicatorStop ? Kirigami.Theme.negativeTextColor : Kirigami.Theme.colorSet
                     onClicked: JS.switchInterval()
-                    enabled: !busy && !error
+                    enabled: sts.idle
                     visible: enabled && cfg.intervalButton
                     tooltipText: cfg.interval ? i18n("Disable auto search updates") : i18n("Enable auto search updates")
                 }
                 QQC.ToolButton {
                     icon.source: cfg.ownIconsUI ? "toolbar_sort" : "sort-name"
                     onClicked: cfg.sorting = !cfg.sorting
-                    enabled: !busy && !error && count > 0
+                    enabled: sts.pending
                     visible: enabled && cfg.sortButton
                     tooltipText: cfg.sorting ? i18n("Sort packages by name") : i18n("Sort packages by repository")
                 }
                 QQC.ToolButton {
                     icon.source: cfg.ownIconsUI ? "toolbar_management" : "tools"
                     onClicked: JS.management()
-                    enabled: !busy && !error && pkg.pacman && cfg.terminal
+                    enabled: sts.idle && pkg.pacman !== "" && cfg.terminal
                     visible: enabled && cfg.managementButton
                     tooltipText: i18n("Management")
                 }
                 QQC.ToolButton {
                     icon.source: cfg.ownIconsUI ? "toolbar_upgrade" : "akonadiconsole"
                     onClicked: JS.upgradeSystem()
-                    enabled: !busy && !error && count > 0 && cfg.terminal
+                    enabled: sts.pending && cfg.terminal
                     visible: enabled && cfg.upgradeButton
                     tooltipText: i18n("Upgrade system")
                 }
                 QQC.ToolButton {
-                    icon.source: cfg.ownIconsUI ? (busy ? "toolbar_stop" : "toolbar_check")
-                                                : (busy ? "media-playback-stopped" : "view-refresh")
+                    icon.source: cfg.ownIconsUI ? (sts.busy ? "toolbar_stop" : "toolbar_check")
+                                                : (sts.busy ? "media-playback-stopped" : "view-refresh")
                     onClicked: JS.checkUpdates()
-                    visible: cfg.checkButton
-                    tooltipText: busy ? i18n("Stop checking") : i18n("Check updates")
+                    visible: cfg.checkButton && !sts.upgrading
+                    tooltipText: sts.busy ? i18n("Stop checking") : i18n("Check updates")
                 }
             }
         }
@@ -127,7 +124,7 @@ Representation {
         spacing: 0
         topPadding: 0
         height: Kirigami.Units.iconSizes.medium
-        visible: cfg.showTabBar && !error && !busy && count > 0
+        visible: cfg.showTabBar && sts.pending
 
         contentItem: TabBar {
             id: tabBar
@@ -167,7 +164,7 @@ Representation {
 
             id: searchField
             clearButtonShown: true
-            visible: searchFieldOpen && !busy && !error && count > 0
+            visible: searchFieldOpen && sts.pending
             placeholderText: i18n("Filter by package name")
 
             onTextChanged: {
@@ -177,29 +174,69 @@ Representation {
         }
 
         Kirigami.InlineMessage {
+            id: releaseMsg
             Layout.fillWidth: true
-            visible: newsVisibility
-
-            icon.source: "news-subscribe"
-            text: news ? i18n("<b>Check out the latest news!") + " (" + news.date + ")</b>" + i18n("<br><b>Article: </b>") + news.article : ""
-            onLinkActivated: Qt.openUrlExternally(link)
+            Layout.bottomMargin: Kirigami.Units.smallSpacing * 2
+            icon.source: "apdatifier-plasmoid"
+            text: "<b>" + i18n("Check out release notes")+" "+currVersion+"</b>"
             type: Kirigami.MessageType.Positive
+            visible: sts.idle && !searchFieldOpen &&
+                     parseFloat(plasmoid.configuration.version.replace(/v/g, "")) < parseFloat(currVersion.replace(/v/g, ""))
 
             actions: [
                 Kirigami.Action {
-                    text: i18n("Read article")
-                    icon.name: "internet-web-browser"
-                    onTriggered: {
-                        Qt.openUrlExternally(news.link)
+                    tooltip: i18n("Select...")
+                    icon.name: "menu_new"
+                    expandible: true
+
+                    Kirigami.Action {
+                        text: "GitHub"
+                        icon.name: "internet-web-browser"
+                        onTriggered: Qt.openUrlExternally("https://github.com/exequtic/apdatifier/releases")
                     }
-                },
+                    Kirigami.Action {
+                        text: i18n("Hide")
+                        icon.name: "gnumeric-row-hide"
+                        onTriggered: releaseMsg.visible = false
+                    }
+                    Kirigami.Action {
+                        text: i18n("Dismiss")
+                        icon.name: "dialog-close"
+                        onTriggered: plasmoid.configuration.version = currVersion
+                    }
+                }
+            ]
+        }
+
+        Kirigami.InlineMessage {
+            id: newsMsg
+            Layout.fillWidth: true
+            Layout.bottomMargin: Kirigami.Units.smallSpacing * 2
+            icon.source: "news-subscribe"
+            text: cfg.news
+            type: Kirigami.MessageType.Warning
+            visible: sts.pending && cfg.newsMsg && !searchFieldOpen
+
+            actions: [
                 Kirigami.Action {
-                    text: i18n("Dismiss")
-                    icon.name: "dialog-close"
-                    onTriggered: {
-                        news.dismissed = true
-                        sh.exec(JS.writeFile(JSON.stringify(news), JS.newsFile))
-                        updateVisibility()
+                    tooltip: i18n("Select...")
+                    icon.name: "menu_new"
+                    expandible: true
+
+                    Kirigami.Action {
+                        text: i18n("Read article")
+                        icon.name: "internet-web-browser"
+                        onTriggered: JS.openNewsLink()
+                    }
+                    Kirigami.Action {
+                        text: i18n("Hide")
+                        icon.name: "gnumeric-row-hide"
+                        onTriggered: newsMsg.visible = false
+                    }
+                    Kirigami.Action {
+                        text: i18n("Dismiss")
+                        icon.name: "dialog-close"
+                        onTriggered: cfg.newsMsg = false
                     }
                 }
             ]
@@ -215,68 +252,55 @@ Representation {
         }
     }
 
-    Loader {
+    ColumnLayout {
+        Layout.maximumWidth: 128
+        Layout.maximumHeight: 128
         anchors.centerIn: parent
-        enabled: busy && plasmoid.location !== PlasmaCore.Types.Floating
+        spacing: Kirigami.Units.largeSpacing * 5
+        enabled: sts.busy && plasmoid.location !== PlasmaCore.Types.Floating
         visible: enabled
-        asynchronous: true
+        
+        BusyIndicator {
+            Layout.alignment: Qt.AlignHCenter
+            Layout.preferredWidth: 128
+            Layout.preferredHeight: 128
+            opacity: 0.6
+            running: true
+        }
 
-        ColumnLayout {
-            Layout.maximumWidth: 128
-            Layout.maximumHeight: 128
-            anchors.centerIn: parent
-            spacing: Kirigami.Units.largeSpacing * 5
-            
-            BusyIndicator {
-                Layout.alignment: Qt.AlignHCenter
-                Layout.preferredWidth: 128
-                Layout.preferredHeight: 128
-                opacity: 0.6
-                running: true
+        RowLayout {
+            spacing: Kirigami.Units.smallSpacing
+            visible: !cfg.showStatusText
+
+            QQC.ToolButton {
+                icon.source: statusIcon
+                hoverEnabled: false
+                highlighted: false
+                enabled: false
             }
 
-            RowLayout {
-                spacing: Kirigami.Units.smallSpacing
-                visible: !cfg.showStatusText
-
-                QQC.ToolButton {
-                    icon.source: statusIcon
-                    hoverEnabled: false
-                    highlighted: false
-                    enabled: false
-                }
-
-                DescriptiveLabel {
-                    text: statusMsg
-                }
+            DescriptiveLabel {
+                text: sts.statusMsg
             }
         }
     }
 
-    Loader {
+    PlaceholderMessage {
         anchors.centerIn: parent
         width: parent.width - (Kirigami.Units.gridUnit * 4)
-        enabled: !busy && !error && count === 0
+        enabled: sts.updated
         visible: enabled
-        asynchronous: true
-        sourceComponent: PlaceholderMessage {
-            width: parent.width
-            iconName: "checkmark"
-            text: i18n("System updated")
-        }
+        iconName: "checkmark"
+        text: i18n("System updated")
     }
 
-    Loader {
+    PlaceholderMessage {
         anchors.centerIn: parent
         width: parent.width - (Kirigami.Units.gridUnit * 4)
-        enabled: !busy && error
+        enabled: !sts.busy && sts.err
         visible: enabled
-        asynchronous: true
-        sourceComponent: PlaceholderMessage {
-            width: parent.width
-            iconName: "error"
-            text: error
-        }
+        iconName: "error"
+        text: sts.errMsg
     }
 
     KSortFilterProxyModel {
@@ -326,11 +350,8 @@ Representation {
         Timer {
             id: holdTimer
             interval: 200
-            running: false
             repeat: true
-            onTriggered: {
-                mouseArea.cursorShape = Qt.ClosedHandCursor
-            }
+            onTriggered: mouseArea.cursorShape = Qt.ClosedHandCursor
         }
     }
 }

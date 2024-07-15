@@ -33,29 +33,41 @@ cp -Rf ~/.config ~/.config-backup-$(date +%Y.%m.%d-%H.%M.%S) && cp -Rf Configs/H
 sudo cp -Rf Configs/System/. / && sudo cp -Rf Configs/Home/. /root/
 sleep 2
 echo
-echo "Adding Fastfetch to .bashrc"
+echo "Adding Fastfetch to your shell configuration"
 echo
-# Function to add fastfetch to .bashrc
+
+# Function to add fastfetch to a shell configuration file
 add_fastfetch() {
-  if ! grep -Fxq 'fastfetch' "$HOME/.bashrc"; then
-    echo '' >> "$HOME/.bashrc"
-    echo 'fastfetch' >> "$HOME/.bashrc"
+  local shell_rc="$1"
+
+  if ! grep -Fxq 'fastfetch' "$HOME/$shell_rc"; then
+    echo '' >> "$HOME/$shell_rc"
+    echo 'fastfetch' >> "$HOME/$shell_rc"
     echo
-    echo "fastfetch has been added to your .bashrc and will run on Terminal launch."
+    echo "fastfetch has been added to your $shell_rc and will run on Terminal launch."
   else
-    echo "fastfetch is already set to run on Terminal launch."
+    echo "fastfetch is already set to run on Terminal launch in $shell_rc."
   fi
 }
+
+# Detect the current shell
+current_shell=$(basename "$SHELL")
 
 # Prompt the user
 read -p "Do you want to enable fastfetch to run on Terminal launch? (y/n): " response
 
 case "$response" in
-  [yY][oO])
-    add_fastfetch
+  [yY])
+    if [ "$current_shell" = "zsh" ]; then
+      add_fastfetch ".zshrc"
+    elif [ "$current_shell" = "bash" ]; then
+      add_fastfetch ".bashrc"
+    else
+      echo "Unsupported shell: $current_shell"
+    fi
     ;;
   [nN])
-    echo "fastfetch will not be added to your .bashrc."
+    echo "fastfetch will not be added to your shell configuration."
     ;;
   *)
     echo "Invalid response. Please enter y or n."
@@ -104,7 +116,5 @@ sudo chmod +x install.sh && sh install.sh -c purple
 sleep 2
 rm -rf ~/xero-layan-git/ ~/Tela-circle-icon-theme/
 echo
-if [ -f ~/.bashrc ]; then sed -i 's/neofetch/fastfetch/g' ~/.bashrc; fi
-if [ -f ~/.zshrc ]; then sed -i 's/neofetch/fastfetch/g' ~/.zshrc; fi
 echo "Plz Reboot To Apply Settings..."
 echo "###############################"

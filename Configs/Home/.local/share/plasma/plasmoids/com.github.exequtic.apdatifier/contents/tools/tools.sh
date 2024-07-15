@@ -3,32 +3,36 @@
 # SPDX-FileCopyrightText: 2024 Evgeny Kazantsev <exequtic@gmail.com>
 # SPDX-License-Identifier: MIT
 
-SCRIPTDIR=`cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd`
 applet="com.github.exequtic.apdatifier"
 
-localdir="$HOME/.local/share"
-plasmoid="$localdir/plasma/plasmoids/$applet"
-iconsdir="$localdir/icons/breeze/status/24"
-notifdir="$localdir/knotifications6"
+scriptDir=`cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd`
+configDir="$HOME/.config/apdatifier"
+localDir="$HOME/.local/share"
+iconsDir="$localDir/icons/breeze/status/24"
+notifDir="$localDir/knotifications6"
+appletDir="$localDir/plasma/plasmoids/$applet"
+
 icon1="apdatifier-plasmoid.svg"
 icon2="apdatifier-packages.svg"
 icon3="apdatifier-package.svg"
 notif="apdatifier.notifyrc"
 
 
-copy() {
-    [ -d $iconsdir ] || mkdir -p $iconsdir
-    [ -f $iconsdir/$icon1 ] || cp $plasmoid/contents/ui/assets/icons/$icon1 $iconsdir
-    [ -f $iconsdir/$icon2 ] || cp $plasmoid/contents/ui/assets/icons/$icon2 $iconsdir
-    [ -f $iconsdir/$icon3 ] || cp $plasmoid/contents/ui/assets/icons/$icon3 $iconsdir
-    [ -d $notifdir ] || mkdir -p $notifdir
-    [ -d $notifdir ] && notifyrc
-    [ -d "$HOME/.cache/apdatifier" ] || mkdir -p "$HOME/.cache/apdatifier"
+init() {
+    [ -d $iconsDir ] || mkdir -p $iconsDir
+    [ -d $notifDir ] || mkdir -p $notifDir
+    [ -d $configDir ] || mkdir -p $configDir
+    [ -d $notifDir ] && notifyrc
+
+    [ -f $iconsDir/$icon1 ] || cp $appletDir/contents/ui/assets/icons/$icon1 $iconsDir
+    [ -f $iconsDir/$icon2 ] || cp $appletDir/contents/ui/assets/icons/$icon2 $iconsDir
+    [ -f $iconsDir/$icon3 ] || cp $appletDir/contents/ui/assets/icons/$icon3 $iconsDir
 }
 
 
 install() {
-    getTxt; checkPkg "git zip kpackagetool6"
+    required="git zip kpackagetool6"
+    for cmd in ${required}; do command -v "$cmd" >/dev/null || { echo -e "${r}${bold} Required installed ${cmd} ${c}"; exit; }; done;
     if [ ! -z "$(kpackagetool6 -t Plasma/Applet -l 2>/dev/null | grep $applet)" ]; then
         echo "Plasmoid already installed"
         uninstall
@@ -52,44 +56,58 @@ install() {
 
 
 uninstall() {
-    getTxt; checkPkg "kpackagetool6"
-    [ ! -f $iconsdir/$icon1 ] || rm -f $iconsdir/$icon1
-    [ ! -f $iconsdir/$icon2 ] || rm -f $iconsdir/$icon2
-    [ ! -f $iconsdir/$icon3 ] || rm -f $iconsdir/$icon3
-    [ ! -f $notifdir/$notif ] || rm -f $notifdir/$notif
-    [ ! -d $iconsdir ] || rmdir -p --ignore-fail-on-non-empty $iconsdir
-    [ ! -d $notifdir ] || rmdir -p --ignore-fail-on-non-empty $notifdir
+    for cmd in "kpackagetool6"; do command -v "$cmd" >/dev/null || { echo -e "${r}${bold} Required installed ${cmd} ${c}"; exit; }; done;
+    [ ! -f $iconsDir/$icon1 ] || rm -f $iconsDir/$icon1
+    [ ! -f $iconsDir/$icon2 ] || rm -f $iconsDir/$icon2
+    [ ! -f $iconsDir/$icon3 ] || rm -f $iconsDir/$icon3
+    [ ! -f $notifDir/$notif ] || rm -f $notifDir/$notif
+    [ ! -d $iconsDir ] || rmdir -p --ignore-fail-on-non-empty $iconsDir
+    [ ! -d $notifDir ] || rmdir -p --ignore-fail-on-non-empty $notifDir
     [ -z "$(kpackagetool6 -t Plasma/Applet -l 2>/dev/null | grep $applet)" ] || kpackagetool6 --type Plasma/Applet -r $applet 2>/dev/null
     sleep 2
 }
 
 notifyrc() {
-cat > "$notifdir/$notif" << EOF
+cat > "$notifDir/$notif" << EOF
 [Global]
 IconName=apdatifier-plasmoid
 Comment=Apdatifier
 
-[Event/popup]
-Name=Only popup
-Comment=Popup option enabled
+[Event/updates]
+Name=New updates
+Comment=Event when updates notification enabled without sound
 Action=Popup
 
-[Event/sound]
-Name=Sound popup
-Comment=Popup and sound options enabled
+[Event/updatesSound]
+Name=New updates (with sound)
+Comment=Event when updates notification enabled with sound
 Action=Popup|Sound
 Sound=service-login
+
+[Event/error]
+Name=Error
+Comment=Event when error notification enabled without sound
+Action=Popup
+
+[Event/errorSound]
+Name=Error (with sound)
+Comment=Event when errors notification enabled with sound
+Action=Popup|Sound
+Sound=dialog-error-serious
+
+[Event/news]
+Name=News
+Comment=Event when news notification without sound
+Action=Popup
+
+[Event/newsSound]
+Name=News (with sound)
+Comment=Event when news notification with sound
+Action=Popup|Sound
+Sound=dialog-information
 EOF
 }
 
-
-getIgnorePkg() {
-    conf=$(pacman -Qv | awk 'NR==2 {print $NF}')
-    if [ -s "$conf" ]; then
-        grep -E "^\s*IgnorePkg\s*=" "$conf" | grep -v "^#" | awk -F '=' '{print $2}'
-        grep -E "^\s*IgnoreGroup\s*=" "$conf" | grep -v "^#" | awk -F '=' '{print $2}'
-    fi
-}
 
 mirrorlistGenerator() {
     count=$1; link=$2; icons=$3; wrapper=$4; sudoCmd=$5; menu=$6; selected=$7
@@ -412,32 +430,29 @@ getWidgetInfo() {
     fi
     [ -z "$contentId" ] && return 1
 
-    current_version=$(jq -r '.KPlugin.Version' $json)
-    current_version_clean=$(echo $current_version | sed 's/[^0-9.]*//g')
-    current_version_clean=$(echo "$current_version_clean" | sed 's/^\.//')
+    currentVer=$(jq -r '.KPlugin.Version' $json)
+    latestVer=$(xmlstarlet sel -t -m "//id[text()='$contentId']/.." -v "version" -n $XML)
+    [ -z "$currentVer" ] || [ -z "$latestVer" ] && return 1
 
-    latest_version=$(xmlstarlet sel -t -m "//id[text()='$contentId']/.." -v "version" -n $XML)
-    latest_version_clean=$(echo $latest_version | sed 's/[^0-9.]*//g')
-    latest_version_clean=$(echo "$latest_version_clean" | sed 's/^\.//')
+    compareVer $(clearVer "$currentVer") $(clearVer "$latestVer")
+    [[ $? != 2 ]] && return 1
 
-    [ -z "$latest_version_clean" ] || [ -z "$current_version_clean" ] && return 1
+    description=$(jq -r '.KPlugin.Description' $json | tr -d '\n')
+    [ -z "$description" ] || [ "$description" = "null" ] && description="-"
 
-    if [[ "$(printf '%s\n' "$latest_version_clean" "$current_version_clean" | sort -V | head -n1)" != "$latest_version_clean" ]]; then
-        description=$(jq -r '.KPlugin.Description' $json | tr -d '\n')
-        [ -z "$description" ] || [ "$description" = "null" ] && description="-"
+    author=$(jq -r '.KPlugin.Authors[].Name' $json | paste -sd "," - | sed 's/,/, /g')
+    [ -z "$author" ] || [ "$author" = "null" ] && author="-"
 
-        author=$(jq -r '.KPlugin.Authors[].Name' $json | paste -sd "," - | sed 's/,/, /g')
-        [ -z "$author" ] || [ "$author" = "null" ] && author="-"
-
-        icon=$(jq -r '.KPlugin.Icon' $json)
-        if [ -z "$icon" ]; then
-            icon="start-here-kde"
-        else
-            ! find /usr/share/icons "$HOME/.local/share/icons" -name "$icon.svg" 2>/dev/null | grep -q . && icon="start-here-kde"
-        fi
-
-        url="https://store.kde.org/p/$contentId"
+    icon=$(jq -r '.KPlugin.Icon' $json)
+    if [ -z "$icon" ]; then
+        icon="start-here-kde"
+    else
+        ! find /usr/share/icons "$HOME/.local/share/icons" -name "$icon.svg" 2>/dev/null | grep -q . && icon="start-here-kde"
     fi
+
+    url="https://store.kde.org/p/$contentId"
+    name=$(echo "$name" | sed 's/ /-/g; s/.*/\L&/')
+    repo="kde-store"
 
     return 0
 }
@@ -468,7 +483,7 @@ downloadWidget() {
         jq '. + { "KPackageStructure": "Plasma/Applet" }' metadata.json > tmp.json && mv tmp.json metadata.json
     fi
 
-    jq --arg new_value "$latest_version" '.KPlugin.Version = $new_value' metadata.json > tmp.json && mv tmp.json metadata.json
+    jq --arg new_value "$latestVer" '.KPlugin.Version = $new_value' metadata.json > tmp.json && mv tmp.json metadata.json
 
     kpackagetool6 -t Plasma/Applet -u .
     sleep 1
@@ -484,17 +499,28 @@ checkWidgets() {
     XML=$(mktemp)
     downloadXML check
 
-    output=""
-    source "$SCRIPTDIR/widgets.sh"
+    first=true; out="["
+    source "$scriptDir/widgets.sh"
     for plasmoid in "${lines[@]}"; do
         getWidgetInfo; [[ $? -ne 0 ]] && continue
-        if [[ "$(printf '%s\n' "$latest_version_clean" "$current_version_clean" | sort -V | head -n1)" != "$latest_version_clean" ]]; then
-            output+="${name}@${contentId}@${icon}@${description}@${author}@${current_version}@${latest_version}@${url}\n"
+        compareVer $(clearVer "$currentVer") $(clearVer "$latestVer")
+        if [[ $? = 2 ]]; then
+            [ "$first" = false ] && out+=","
+            out+="{\"NM\": \"${name}\","
+            out+="\"RE\": \"${repo}\","
+            out+="\"CN\": \"${contentId}\","
+            out+="\"IN\": \"${icon}\","
+            out+="\"DE\": \"${description}\","
+            out+="\"AU\": \"${author}\","
+            out+="\"VO\": \"${currentVer}\","
+            out+="\"VN\": \"${latestVer}\","
+            out+="\"LN\": \"${url}\"}"
+            first=false
         fi
     done
 
     rm $XML
-    echo -e "$output"
+    echo -e "$out]"
 }
 
 upgradeAllWidgets() {
@@ -509,11 +535,11 @@ upgradeAllWidgets() {
     tput rc; tput ed; printDone "$WIDGETS_CHECK"
 
     hasUpdates="false"
-    source "$SCRIPTDIR/widgets.sh"
+    source "$scriptDir/widgets.sh"
     for plasmoid in "${lines[@]}"; do
         getWidgetInfo; [[ $? -ne 0 ]] && continue
-
-        if [[ "$(printf '%s\n' "$latest_version_clean" "$current_version_clean" | sort -V | head -n1)" != "$latest_version_clean" ]]; then
+        compareVer $(clearVer "$currentVer") $(clearVer "$latestVer")
+        if [[ $? = 2 ]]; then
             link=$(xmlstarlet sel -t -m "//id[text()='$contentId']/.." -v "downloadlink" -n $XML)
             tempDir=$(mktemp -d)
             tempFile="$tempDir/$(basename "${link}")"
@@ -563,7 +589,7 @@ upgradeWidget() {
 
     formatXML $XML
     link=$(xmlstarlet sel -t -m "//id[text()='$1']/.." -v "downloadlink" -n $XML)
-    latest_version=$(xmlstarlet sel -t -m "//id[text()='$1']/.." -v "version" -n $XML)
+    latestVer=$(xmlstarlet sel -t -m "//id[text()='$1']/.." -v "version" -n $XML)
     tempFile="$tempDir/$(basename "${link}")"
 
     downloadWidget $4; [[ $? -ne 0 ]] && exit
@@ -584,7 +610,7 @@ upgradeWidget() {
 
 
 getTxt() {
-    export TEXTDOMAINDIR="$SCRIPTDIR/../locale"
+    export TEXTDOMAINDIR="$scriptDir/../locale"
     export TEXTDOMAIN="plasma_applet_${applet}"
 
     declare -a var_names=(
@@ -600,7 +626,7 @@ getTxt() {
         i=$((i+1))
         text=$(echo "$line" | grep -oP '(?<=\().*(?=\))' | sed 's/"//g')
         eval "${var_names[$((i-1))]}=\"$(gettext "$text")\""
-    done < "$SCRIPTDIR/../ui/components/Messages.qml"
+    done < "$scriptDir/../ui/components/Messages.qml"
 
     if [[ $1 = "true" ]]; then
         ICO_MNG_OPT_01="󱝩 "; ICO_MNG_OPT_02="󱝫 "; ICO_MNG_OPT_03="󱝭 "; ICO_MNG_OPT_04="󱝭 "
@@ -620,23 +646,59 @@ printError() { echo -e "${r}${ICO_ERR} $1 ${c}"; }
 printImportant() { echo -e "${y}${bold}${ICO_WARN} $1 ${c}"; }
 printQuestion() { echo -en "\n${y}${ICO_QUESTION}${c}${y}${bold} $1 ${c}[y/N]: "; }
 printExec() { echo -e "${b}${ICO_EXEC}${c}${bold} ${MNG_EXEC}${c} $wrapper_sudo $1 $2 \n"; }
+
 oneLine() { tr '\n' ' ' | sed 's/ $//'; }
 checkPkg() { for cmd in ${1}; do command -v "$cmd" >/dev/null || { printError "${CMD_ERR} ${cmd}"; [ $2 ] && returnMenu || exit; }; done; }
 spinner() { spin="⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏"; while kill -0 $1 2>/dev/null; do i=$(( (i+1) %10 )); printf "${r}\r${spin:$i:1}${c} ${b}$2${c}"; sleep .2; done; }
+
 formatXML() { sed -i -E 's/downloadlink[0-9]+>/downloadlink>/g' $1; sed -i 's/details="full"/details="summary"/g' $1; \
               xmlstarlet ed -L -d "//content[@details='summary']/downloadlink[position() < last()]" \
                                -d "//content[@details='summary']/*[not(self::id or self::name or self::version or self::downloadlink)]" $1; }
 
+clearVer() { local ver="${1}"; ver="${ver#.}"; ver="${ver%.}"; ver="${ver//[!0-9.]}"; echo "${ver}"; }
+compareVer() {
+    [[ $1 == $2 ]] && return 0
+    local IFS=.; local i ver1=($1) ver2=($2)
+    for ((i=${#ver1[@]}; i<${#ver2[@]}; i++)); do ver1[i]=0; done
+    for ((i=0; i<${#ver1[@]}; i++)); do
+        [[ -z ${ver2[i]} ]] && ver2[i]=0
+        ((10#${ver1[i]} > 10#${ver2[i]})) && return 1
+        ((10#${ver1[i]} < 10#${ver2[i]})) && return 2
+    done
+    return 0
+}
+
+convertRules() {
+    old_file="$HOME/.cache/apdatifier/packages_icons"
+    new_file="$HOME/.config/apdatifier/rules.json"
+    [ ! -s $old_file ] && { echo -e "${r}Empty or not exist ->${c} $old_file"; exit; }
+    [ -s $new_file ] && { echo -e "${r}Already exist and not empty ->${c} $new_file"; exit; }
+    first=true; buffer=""; echo "[" > "$new_file"
+    while IFS= read -r line || [ -n "$line" ]; do
+        IFS='>' read -r type value icon <<< "$line"
+        type="${type// /}"; value="${value// /}"; icon="${icon// /}"
+        if [ -n "$type" ] && [ -n "$value" ] && [ -n "$icon" ]; then
+            if [[ "$type" =~ ^(repo|group|match|name)$ ]]; then
+                [ "$first" = false ] && buffer+=",\n"
+                first=false
+                buffer+="{\"type\":\"$type\",\"value\":\"$value\",\"icon\":\"$icon\",\"excluded\":false}"
+            fi
+        fi
+    done < "$old_file"
+    echo -e "$buffer\n]" >> "$new_file"
+    [ -s $new_file ] && { echo -e "${g}Created ->${c} $new_file"; exit; }
+}
+
 
 case "$1" in
-                        "copy") copy;;
+                        "init") init;;
                      "install") install;;
                    "uninstall") uninstall;;
-                  "getIgnored") getIgnorePkg;;
                   "management") shift; management $1 $2 $3 $4 $5;;
                 "checkWidgets") shift; checkWidgets;;
                "upgradeWidget") shift; upgradeWidget $1 $2 $3 $4 "$5";;
            "upgradeAllWidgets") shift; upgradeAllWidgets $1 $2 "$3";;
                   "mirrorlist") shift; mirrorlistGenerator $1 $2 $3;;
+                "convertRules") convertRules;;
                              *) exit;;
 esac
