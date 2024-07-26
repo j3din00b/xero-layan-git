@@ -24,7 +24,7 @@ else
     exit 1
 fi
 # Install packages using the detected AUR helper
-$aur_helper -S --noconfirm --needed ttf-meslo-nerd-font-powerlevel10k oh-my-posh-bin
+$aur_helper -S --noconfirm --needed ttf-meslo-nerd-font-powerlevel10k
 sleep 2
 echo
 echo "Creating Backup & Applying new Rice, hold on..."
@@ -75,19 +75,49 @@ case "$response" in
 esac
 sleep 2
 echo
-echo "Applying OhMy-Posh to Bash"
+echo "Oh-My-Posh Setup."
 echo
-# Check if the folder exists, if not create it and download the file
-if [ ! -d "$HOME/.config/ohmyposh" ]; then
-  mkdir -p "$HOME/.config/ohmyposh"
-fi
-curl -o "$HOME/.config/ohmyposh/tokyonight_storm.omp.json" https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/tokyonight_storm.omp.json
-sleep 2
-# Check if the line exists in ~/.bashrc, if not add it
-if ! grep -Fxq 'eval "$(oh-my-posh init bash --config $HOME/.config/ohmyposh/tokyonight_storm.omp.json)"' "$HOME/.bashrc"; then
-  echo '' >> "$HOME/.bashrc"
-  echo 'eval "$(oh-my-posh init bash --config $HOME/.config/ohmyposh/tokyonight_storm.omp.json)"' >> "$HOME/.bashrc"
-fi
+echo "Installing Oh-My-Posh"
+curl -s https://ohmyposh.dev/install.sh | bash -s
+echo
+sleep 3
+echo "Injecting OMP to .bashrc"
+
+# Define the lines to be added
+line1='# Oh-My-Posh'
+line2='PATH="$HOME/.local/bin:$PATH"'
+line3='# Oh-My-Posh Config'
+line4='eval "$(oh-my-posh init bash --config $HOME/.config/ohmyposh/tokyonight_storm.omp.json)"'
+
+# Define the .bashrc file
+bashrc_file="$HOME/.bashrc"
+
+# Function to add lines if not already present
+add_lines() {
+  if ! grep -qxF "$line1" "$bashrc_file"; then
+    echo "" >> "$bashrc_file"  # Add an empty line before line1
+    echo "$line1" >> "$bashrc_file"
+  fi
+
+  if ! grep -qxF "$line2" "$bashrc_file"; then
+    echo "$line2" >> "$bashrc_file"
+    echo "" >> "$bashrc_file"  # Add an empty line after line2
+  fi
+
+  if ! grep -qxF "$line3" "$bashrc_file"; then
+    echo "$line3" >> "$bashrc_file"
+  fi
+
+  if ! grep -qxF "$line4" "$bashrc_file"; then
+    echo "$line4" >> "$bashrc_file"
+  fi
+}
+
+# Run the function to add lines
+add_lines
+
+echo "Oh-My-Posh injection complete."
+sleep 3
 echo
 echo "Applying Grub Theme...."
 echo "#######################"
