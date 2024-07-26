@@ -53,7 +53,7 @@
             "type": "boolean",
             "title": "Enable automatic upgrades for Oh My Posh (supports Windows/macOS only)",
             "description": "https://ohmyposh.dev/docs/configuration/general#general-settings",
-            "default": false
+            "default": true
          },
           "template": "({{ .HEAD}})",
           "properties": {
