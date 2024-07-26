@@ -40,6 +40,12 @@
           "template": "<b>{{ .Path }}</b> <p:light-sky-blue>\u26a1</>"
         },
         {
+          "type": "upgrade",
+          "style": "plain",
+          "foreground": "#111111",
+          "background": "#FFD664"
+        },
+        {
           "type": "git",
           "style": "plain",
           "foreground": "p:light-sky-blue",
@@ -111,12 +117,16 @@
           "template": "\uFCD1 {{ .Full}}"
         },
         {
-          "type": "command",
-          "style": "plain",
-          "foreground": "p:white-blue",
+          "type": "executiontime",
+          "style": "powerline",
+          "powerline_symbol": "",
+          "foreground": "#ffffff",
+          "background": "transparent",
+          "template": " <#fefefe></> {{ .FormattedMs }} ",
           "properties": {
-            "command": "git log --pretty=format:%cr -1 || date +%H:%M:%S",
-            "shell": "bash"
+            "threshold": 500,
+            "style": "austin",
+            "always_enabled": true
           }
         }
       ],
