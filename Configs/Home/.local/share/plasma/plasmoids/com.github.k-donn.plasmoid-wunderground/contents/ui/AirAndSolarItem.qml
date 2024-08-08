@@ -83,16 +83,18 @@ RowLayout {
         Rectangle {
             id: aqIndexColor
 
-            Layout.preferredWidth: aqIndexTxt.width
-            Layout.preferredHeight: aqIndexTxt.height
+            Layout.preferredWidth: aqIndexTxt.width + 5
+            Layout.preferredHeight: aqIndexTxt.height + 5
             Layout.alignment: Qt.AlignCenter
 
             color: "#" + weatherData["aq"]["aqColor"]
 
+            radius: 5
+
             PlasmaComponents.Label {
                 id: aqIndexLabel
 
-                horizontalAlignment: Text.AlignHCenter
+                anchors.centerIn: parent
 
                 color: "#000000"
 
@@ -110,9 +112,10 @@ RowLayout {
 
             PlasmaComponents.Label {
                 horizontalAlignment: Text.AlignCenter
-                textFormat: Text.StyledText
 
-                text: "<u style='border-bottom: 2px dotted #000;text-decoration: none;'>" + weatherData["aq"]["aqPrimary"] + "</u>"
+                font.underline: true
+
+                text: weatherData["aq"]["aqPrimary"]
 
                 PlasmaCore.ToolTipArea {
                     anchors.fill: parent

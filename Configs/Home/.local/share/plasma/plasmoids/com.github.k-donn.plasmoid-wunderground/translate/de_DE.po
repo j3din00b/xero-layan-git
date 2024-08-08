@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: plasmoid-wunderground\n"
 "Report-Msgid-Bugs-To: https://github.com/k-donn/plasmoid-wunderground\n"
-"POT-Creation-Date: 2024-06-04 13:51-0400\n"
+"POT-Creation-Date: 2024-08-05 19:44-0400\n"
 "PO-Revision-Date: DA-Mo-YEAR HO:MI+ZONE\n"
 "Last-Translator: Stefan Wannemacher <swannema@t-online.de>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -90,8 +90,8 @@ msgid "Severity: %1"
 msgstr "Level: %1"
 
 #: ../contents/ui/AlertsItem.qml
-msgid "Region: %1<br/>Action: %2<br/>Disclaimer: %3<br/>%4"
-msgstr "Region: %1<br/>Aktion: %2<br/>Haftungsausschluss: %3<br/>%4"
+msgid "Region: %1<br/>Action: %2<br/>Disclaimer: %3<br/>Issued by: %4"
+msgstr "Region: %1<br/>Aktion: %2<br/>Haftungsausschluss: %3<br/>Ausgestellt von: %4"
 
 #: ../contents/ui/BottomPanel.qml
 msgid "There are weather alerts for your area!"
@@ -157,26 +157,29 @@ msgstr "Zeige Luftdrucktendenz"
 msgid "Write to console.log:"
 msgstr "Schreibe in den console.log"
 
-#: ../contents/ui/config/ConfigFontFamily.qml
-msgctxt "Use default font"
-msgid "Default"
-msgstr "Standard"
+#: ../contents/ui/config/ConfigStation.qml
+msgid "Find Station"
+msgstr "Station suchen"
 
 #: ../contents/ui/config/ConfigStation.qml
 msgid "Enter Station"
-msgstr "Eingabe Station"
+msgstr "Aktuelle Station"
+
+#: ../contents/ui/config/ConfigStation.qml
+msgid "Station Info"
+msgstr "Station Details"
+
+#: ../contents/ui/config/ConfigStation.qml
+msgid "Uses WGS84 geocode coordinates"
+msgstr "WGS84 Geocode Koordinaten"
 
 #: ../contents/ui/config/ConfigStation.qml
 msgid "Weatherstation ID:"
 msgstr "Wetterstation ID"
 
 #: ../contents/ui/config/ConfigStation.qml
-msgid "Get Nearest Station"
-msgstr "Naheliegenste Station"
-
-#: ../contents/ui/config/ConfigStation.qml
-msgid "Uses WGS84 geocode coordinates"
-msgstr "Nutzt WGS84 Geocode Koordinaten"
+msgid "Weatherstation Name:"
+msgstr "Wetterstation Name"
 
 #: ../contents/ui/config/ConfigStation.qml
 msgid "Longitude:"
@@ -189,10 +192,6 @@ msgstr "Breitengrad"
 #: ../contents/ui/config/ConfigStation.qml
 msgid "Refresh period (s):"
 msgstr "Aktualisieren (s):"
-
-#: ../contents/ui/config/ConfigStation.qml
-msgid "Find Station"
-msgstr "Finde Station"
 
 #: ../contents/ui/config/ConfigUnits.qml
 msgctxt "The unit system"
@@ -267,8 +266,12 @@ msgid "PRESSURE"
 msgstr "Luftdruck"
 
 #: ../contents/ui/DetailsItem.qml
-msgid "Pressure has %1 %2 in the last three hours."
-msgstr "Luftdruck ist in den letzten 3 Stunden %1 %2."
+msgid "Pressure has risen %1 in the last three hours."
+msgstr "In den letzten 3 Stunden ist der Luftdruck um %1 gestiegen"
+
+#: ../contents/ui/DetailsItem.qml
+msgid "Pressure has fallen %1 in the last three hours."
+msgstr "In den letzten 3 Stunden ist der Luftdruck um %1 gefallen"
 
 #: ../contents/ui/DetailsItem.qml
 msgid "HUMIDITY"
@@ -293,9 +296,50 @@ msgstr "<font size='4'>Gefühlt wie: %1<br/>Gewitter: %2<br/>UV: %3<br/>Schnee: 
 msgid "Loading data..."
 msgstr "Lade Daten..."
 
+#: ../contents/ui/lib/BackgroundToggle.qml
+msgid "Desktop Widget:"
+msgstr "Desktop-Widget"
+
 #: ../contents/ui/lib/ConfigBtn.qml
 msgid "Configure Wunderground"
 msgstr "Wunderground einrichten"
+
+#: ../contents/ui/lib/ConfigFontFamily.qml
+msgctxt "Use default font"
+msgid "Default"
+msgstr "Standard"
+
+#: ../contents/ui/lib/StationPickerDialog.qml
+msgid "Saved Weather Stations"
+msgstr "Gespeicherte Wetterstationen"
+
+#: ../contents/ui/lib/StationPickerDialog.qml
+msgid "Remove Selected"
+msgstr "Ausgewählte Station entfernen"
+
+#: ../contents/ui/lib/StationPickerDialog.qml
+msgid "Confirm Remove %1"
+msgstr "Bestätige  %1  entfernen "
+
+#: ../contents/ui/lib/StationPickerDialog.qml
+msgid "Add"
+msgstr "Hinzufügen"
+
+#: ../contents/ui/lib/StationPickerDialog.qml
+msgid "Remove"
+msgstr "Entfernen"
+
+#: ../contents/ui/lib/StationPickerDialog.qml
+msgid "Select"
+msgstr "Anwenden"
+
+#: ../contents/ui/lib/StationPickerDialog.qml
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: ../contents/ui/lib/StationPicker.qml
+msgid "Choose…"
+msgstr "Wählen"
 
 #: ../contents/ui/main.qml
 msgid "Set the weather station to pull data from."

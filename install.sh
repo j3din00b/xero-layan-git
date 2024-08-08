@@ -78,16 +78,14 @@ echo
 echo "Oh-My-Posh Setup."
 echo
 echo "Installing Oh-My-Posh"
-curl -s https://ohmyposh.dev/install.sh | bash -s
+$AUR_HELPER -S --noconfirm --needed oh-my-posh-bin
 echo
 sleep 3
 echo "Injecting OMP to .bashrc"
 
 # Define the lines to be added
-line1='# Oh-My-Posh'
-line2='PATH="$HOME/.local/bin:$PATH"'
-line3='# Oh-My-Posh Config'
-line4='eval "$(oh-my-posh init bash --config $HOME/.config/ohmyposh/tokyonight_storm.omp.json)"'
+line1='# Oh-My-Posh Config'
+line2='eval "$(oh-my-posh init bash --config $HOME/.config/ohmyposh/xero.omp.json)"'
 
 # Define the .bashrc file
 bashrc_file="$HOME/.bashrc"
@@ -102,14 +100,6 @@ add_lines() {
   if ! grep -qxF "$line2" "$bashrc_file"; then
     echo "$line2" >> "$bashrc_file"
     echo "" >> "$bashrc_file"  # Add an empty line after line2
-  fi
-
-  if ! grep -qxF "$line3" "$bashrc_file"; then
-    echo "$line3" >> "$bashrc_file"
-  fi
-
-  if ! grep -qxF "$line4" "$bashrc_file"; then
-    echo "$line4" >> "$bashrc_file"
   fi
 }
 
