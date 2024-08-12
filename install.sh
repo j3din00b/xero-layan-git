@@ -24,7 +24,7 @@ else
     exit 1
 fi
 # Install packages using the detected AUR helper
-$aur_helper -S --noconfirm --needed ttf-meslo-nerd-font-powerlevel10k
+$aur_helper -S --noconfirm --needed ttf-meslo-nerd-font-powerlevel10k tela-circle-icon-theme-purple
 sleep 2
 echo
 echo "Creating Backup & Applying new Rice, hold on..."
@@ -126,15 +126,8 @@ sleep 2
 echo
 echo "Installing & Applying GTK4 Theme "
 echo "#################################"
-cd ~ && git clone https://github.com/vinceliuice/Layan-gtk-theme.git && cd Layan-gtk-theme/ && sh install.sh -l -c dark
+cd ~ && git clone https://github.com/vinceliuice/Layan-gtk-theme.git && cd Layan-gtk-theme/ && sh install.sh -l -c dark -d $HOME/.themes
 cd ~ && rm -Rf Layan-gtk-theme/
-echo
-echo "Installing Icon Pack"
-echo "####################"
-cd ~ && git clone https://github.com/vinceliuice/Tela-circle-icon-theme.git && cd Tela-circle-icon-theme/
-sudo chmod +x install.sh && sh install.sh -c purple
-sleep 2
-rm -rf ~/xero-layan-git/ ~/Tela-circle-icon-theme/
 echo
 echo "Plz Reboot To Apply Settings..."
 echo "###############################"
