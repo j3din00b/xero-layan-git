@@ -19,28 +19,4 @@ git clone https://github.com/xerolinux/xero-layan-git
 cd xero-layan-git/ && ./install.sh
 ```
 
-### Your Settings
-
-The install script will backup some app settings & all system ones before applying and overriding them with new ones, you will be able to restore what you need from the backup, so please do not report that. You have been warned. In case of any issues please find us on our [Discord](https://discord.gg/5sqxTSuKZu). Best of luck !
-
-## Script will do the following steps :
-
-- Create a backup of your ~/.config folder.
-- Download and install necessary packages if needed...
-- Override your settings and files with this rice's.
-- Install and apply New Grub Theme...
-
-## Theme, Icons & Widgets Included :
-
-Theme / Icons by [VinceLiuice](https://github.com/vinceliuice) :
-
-- Layan [GTK](https://github.com/vinceliuice/Layan-gtk-theme) / [KDE](https://github.com/vinceliuice/Layan-kde)
-- Tela Circle Icons [Link](https://github.com/vinceliuice/Tela-circle-icon-theme)
-
-Widgets / Plasmoids :
-
-- Apdatifier [Link](https://store.kde.org/p/2135796)
-- Netspeed [Link](https://store.kde.org/p/2136505)
-- Quick Shutdown [Link](https://store.kde.org/p/1288430)
-- Toggle Overview [Link](https://store.kde.org/p/2132554)
-- Wunderground PWS [Link](https://store.kde.org/p/2135799)
+For more detailed info visit the [**Wiki**](https://wiki.xerolinux.xyz/rice/)
