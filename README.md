@@ -6,17 +6,8 @@ I would like to clarify one very important aspect of ricing. We use custom theme
 
 ![XeroLayan](https://i.imgur.com/VA2tycb.jpeg)
 
-### Performance :
+<div align="center">
 
-This rice has been throughly optimized for best performance on higher-end systems.. Although it might work on lower-end ones, for better performance I do not recommend that you use it there. So please do not report any performance issues.
+## [.:: Follow the Wiki ::.](https://wiki.xerolinux.xyz/rice/)
 
-### Installation
-
-**Install At Own Risk!!!**. As of now it supports **Plasma 6.x.x**. If you notice any issues and report them via issue tracker on here and I will do my best to address them. To apply the rice, please follow the commands posted below. You will need either **Paru** or **Yay** (installed via my toolkit). Keep in mind that this will replace some files. Read below...
-
-```Bash
-git clone https://github.com/xerolinux/xero-layan-git
-cd xero-layan-git/ && ./install.sh
-```
-
-For more detailed info visit the [**Wiki**](https://wiki.xerolinux.xyz/rice/)
+</div>
