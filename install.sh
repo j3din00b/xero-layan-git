@@ -78,7 +78,7 @@ echo
 echo "Oh-My-Posh Setup."
 echo
 echo "Installing Oh-My-Posh"
-$AUR_HELPER -S --noconfirm --needed oh-my-posh-bin
+$aur_helper -S --noconfirm --needed oh-my-posh-bin
 echo
 sleep 3
 echo "Injecting OMP to .bashrc"
