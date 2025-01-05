@@ -1,5 +1,6 @@
 /*
  * SPDX-FileCopyrightText: 2018 Friedrich W. H. Kossebau <kossebau@kde.org>
+ * Copyright               2025 Kevin Donnelly
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
@@ -72,6 +73,12 @@ GridLayout {
                     pixelSize: 1024
                 }
                 fontSizeMode: Text.VerticalFit
+                // These magic values are taken from the digital clock, so that the
+                // text sizes here are identical with various clock text sizes
+                height: {
+                    const textHeightScaleFactor = (parent.height > 26) ? 0.7: 0.9;
+                    return Math.min (parent.height * textHeightScaleFactor, 3 * Kirigami.Theme.defaultFont.pixelSize);
+                }
             }
         },
         State {
@@ -115,6 +122,7 @@ GridLayout {
                     pixelSize: Kirigami.Units.gridUnit * 2
                 }
                 fontSizeMode: Text.HorizontalFit
+                width: iconAndTextRoot.width
             }
         }
     ]
@@ -154,16 +162,10 @@ GridLayout {
                 leftMargin: Kirigami.Units.smallSpacing
                 rightMargin: Kirigami.Units.smallSpacing
             }
-            // These magic values are taken from the digital clock, so that the
-            // text sizes here are identical with various clock text sizes
-            height: {
-                const textHeightScaleFactor = (parent.height > 26) ? 0.7: 0.9;
-                return Math.min (parent.height * textHeightScaleFactor, 3 * Kirigami.Theme.defaultFont.pixelSize);
-            }
             visible: false
 
             // pattern to reserve some constant space TODO: improve and take formatting/i18n into account
-            text: "888° X"
+            text: "---" + label.text
             textFormat: Text.PlainText
         }
 
