@@ -1,5 +1,5 @@
 #!/bin/bash
-#set -e
+set -eu  # Exit on error and undefined variables
 echo "##########################################"
 echo "Be Careful this will override your Rice!! "
 echo "##########################################"
@@ -120,8 +120,13 @@ echo
 echo "Installing Layan Theme"
 echo "######################"
 echo
-cd ~ && git clone https://github.com/vinceliuice/Layan-kde.git && cd Layan-kde/ && sh install.sh
-cd ~ && rm -Rf Layan-kde/
+if git clone https://github.com/vinceliuice/Layan-kde.git; then
+    cd Layan-kde/ && sh install.sh
+    cd ~ && rm -Rf Layan-kde/
+else
+    echo "Failed to clone Layan-kde theme"
+    exit 1
+fi
 sleep 2
 echo
 echo "Installing & Applying GTK4 Theme "
