@@ -131,6 +131,12 @@ sleep 2
 echo
 echo "Installing & Applying GTK4 Theme "
 echo "#################################"
+# Check if ~/.themes directory exists, if not create it
+if [ ! -d "$HOME/.themes" ]; then
+    mkdir -p "$HOME/.themes"
+    echo "Created ~/.themes directory"
+fi
+
 cd ~ && git clone https://github.com/vinceliuice/Layan-gtk-theme.git && cd Layan-gtk-theme/ && sh install.sh -l -c dark -d $HOME/.themes
 cd ~ && rm -Rf Layan-gtk-theme/
 echo
