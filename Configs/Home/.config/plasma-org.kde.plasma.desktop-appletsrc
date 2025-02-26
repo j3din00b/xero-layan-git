@@ -142,9 +142,10 @@ popupWidth=560
 
 [Containments][126][Applets][196][Configuration][Appearance]
 autoFontAndSize=false
-customDateFormat=ddd d MMM yy |\s
+customDateFormat=ddd d MMM yy |
 dateDisplayFormat=BesideTime
-dateFormat=custom
+dateFormat=longDate
+displayTimezoneFormat=FullText
 fontFamily=Hack Nerd Font
 fontSize=12
 fontStyleName=Regular
