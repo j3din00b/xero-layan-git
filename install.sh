@@ -85,7 +85,7 @@ echo "Injecting OMP to .bashrc"
 
 # Define the lines to be added
 line1='# Oh-My-Posh Config'
-line2='eval "$(oh-my-posh init bash --config $HOME/.config/ohmyposh/xero.omp.json)"'
+line2='eval "$(oh-my-posh init bash --config $HOME/.config/ohmyposh/distrous-xero-linux.omp)"'
 
 # Define the .bashrc file
 bashrc_file="$HOME/.bashrc"
