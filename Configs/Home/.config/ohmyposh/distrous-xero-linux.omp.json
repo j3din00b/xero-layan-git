@@ -89,6 +89,64 @@
       "type": "prompt"
     },
     {
+      "alignment": "right",
+      "segments": [
+        {
+          "background": "#03DE6C",
+          "background_templates": [
+            "{{ if gt .Code 0 }}#E44141{{ end }}"
+          ],
+          "foreground": "#000000",
+          "foreground_templates": [
+            "{{ if gt .Code 0 }}#FFFFFF{{ end }}"
+          ],
+          "leading_diamond": "\ue0b2",
+          "properties": {
+            "always_enabled": true
+          },
+          "style": "diamond",
+          "template": "{{ if gt .Code 0 }}\uf00d{{ else }}\uf00c{{ end }}",
+          "type": "status",
+          "trailing_diamond": "\ue0b0"
+        },
+        {
+          "background": "#575656",
+          "foreground": "#FFFFFF",
+          "properties": {
+            "style": "roundrock",
+            "threshold": 0
+          },
+          "style": "diamond",
+          "template": " \uf252 {{ .FormattedMs }}",
+          "trailing_diamond": "\ue0b0",
+          "type": "executiontime"
+        }
+      ],
+      "type": "prompt"
+    },
+    {
+      "alignment": "left",
+      "newline": true,
+      "segments": [
+        {
+          "foreground": "#83A7CC",
+          "style": "plain",
+          "template": "\u256d\u2500",
+          "type": "text"
+        },
+        {
+          "foreground": "#CA7EF0",
+          "properties": {
+            "time_format": " <#F07ED9>\uf017 03:04:05 PM</> <#17B5C8>|</> \uf073 06/01/02 \uf104 January \uf142 Wednesday \uf105"
+          },
+          "style": "plain",
+          "template": "{{ .CurrentDate | date .Format }}",
+          "type": "time"
+        }
+      ],
+      "type": "prompt"
+    },
+    {
       "alignment": "left",
       "newline": true,
       "type": "prompt",
