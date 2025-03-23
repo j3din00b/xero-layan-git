@@ -6,7 +6,6 @@ import Qt5Compat.GraphicalEffects
 import org.kde.plasma.components 3.0 as PlasmaComponents3
 import org.kde.kirigami as Kirigami
 import org.kde.plasma.private.brightnesscontrolplugin
-import org.kde.plasma.private.mpris as Mpris
 import "js/funcs.js" as Funcs
 import "lib" as Lib
 import org.kde.plasma.private.sessions as Sessions
@@ -107,11 +106,6 @@ Item {
     Layout.maximumHeight: Layout.preferredHeight
     clip: true
     // Lists all available network connections
-
-
-    Mpris.Mpris2Model {
-        id: mpris2Model
-    }
 
     Component.onCompleted: {
         console.log(nightLight, "pruebas de asignacio de luz nocturna", control.running )
@@ -730,10 +724,6 @@ Item {
                         height: 22
                         spacing: 2
                         anchors.verticalCenter: parent.verticalCenter
-                        function next() {
-                            mpris2Model.currentPlayer.Next();
-
-                        }
 
                         Kirigami.Icon {
                             id: iconplay
@@ -743,7 +733,7 @@ Item {
                             roundToIconSize: false
                             MouseArea {
                                 anchors.fill: parent
-                                onClicked: mpris2Model.currentPlayer.PlayPause();
+                                onClicked: multimedia.playPause()
                             }
                         }
                         Kirigami.Icon {
@@ -754,7 +744,7 @@ Item {
                             roundToIconSize: false
                             MouseArea {
                                 anchors.fill: parent
-                                onClicked:  mpris2Model.currentPlayer.Next();
+                                onClicked: multimedia.nextTrack()
                             }
                         }
 
